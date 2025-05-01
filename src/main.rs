@@ -5,6 +5,9 @@ use csv::ReaderBuilder;
 mod graph;
 use graph::{build_airport, Graph};
 use crate::graph::FlightStats;
+mod path;
+use path::shortest_path;
+use std::io::{self, Write};
 
 
 // Enum to represent the column values that can be a string or f64 
@@ -119,32 +122,46 @@ impl DataFrame{
   
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+
+fn main() -> Result<(), Box<dyn Error>> {
+    // Load data and read CSV
     let mut df = DataFrame::new();
-
-
-    let types = vec![1, 1, 2];
-
-
+    let types = vec![1, 1, 2]; 
     df.read_csv("airport.csv", &types)?;
-
-    // Print the DataFrame
-    df.print_dataframe();
-
-    // Build the airport graph from the DataFrame
-    let graph = graph::build_airport(&df);
-
-    println!("Airport Graph: {:?}", graph);
-
-
-    if let Some(destinations) = graph.get("JFK") {
-        for (destination, stats) in destinations {
-            println!(
-                "From JFK to {}: Times: {:?}, Count: {}, Average: {:.2}, Std Dev: {:.2}",
-                destination, stats.times, stats.count, stats.average, stats.std_dev
-            );
+   
+ 
+ 
+    // Build the graph
+    let graph = build_airport(&df);
+ 
+ 
+    // Get user input
+    print!("Enter your starting airport code: ");
+    io::stdout().flush()?;
+    let mut start = String::new();
+    io::stdin().read_line(&mut start)?;
+    let start = start.trim();
+ 
+ 
+    print!("Enter your destination airport code ");
+    io::stdout().flush()?;
+    let mut goal = String::new();
+    io::stdin().read_line(&mut goal)?;
+    let goal = goal.trim();
+ 
+ 
+    // Find shortest path
+    match shortest_path(&graph, start, goal) {
+        Some((cost, path)) => {
+            println!("Shortest path from {} to {} is:", start, goal);
+            println!("Travel Time: {:.2} hours", cost/60.0);
+            println!("Shortest path: {:?}", path);
         }
+        None => println!("No path found from {} to {}.", start, goal),
     }
-
+ 
+ 
     Ok(())
-}
+ }
+ 
