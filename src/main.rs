@@ -32,6 +32,7 @@ struct DataFrame{
 
 // copied from homework 8  starter code
 // Custom error type for handling errors
+// This error type is used to represent errors that occur during CSV reading or data processing
 #[derive(Debug)]
 struct MyError(String);
 
@@ -123,7 +124,12 @@ impl DataFrame{
 }
 
 
-
+// Function to calculate the average and standard deviation of a vector of f64
+//
+// creates dataframe from the csv file
+// made graph from the dataframe
+// use a loop to get user input for start and destination airports
+// and find the fastest route using Dijkstra's algorithm
 fn main() -> Result<(), Box<dyn Error>> {
     // Load data and read CSV
     let mut df = DataFrame::new();
