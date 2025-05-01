@@ -130,34 +130,61 @@ fn main() -> Result<(), Box<dyn Error>> {
     let types = vec![1, 1, 2]; 
     df.read_csv("airport.csv", &types)?;
 
-    // Build the graph
+    
     let graph = build_airport(&df);
-    // Get user input
-    print!("Enter your starting airport code: ");
-    io::stdout().flush()?;
-    let mut start = String::new();
-    io::stdin().read_line(&mut start)?;
-    let start = start.trim();
- 
- 
-    print!("Enter your destination airport code ");
-    io::stdout().flush()?;
-    let mut goal = String::new();
-    io::stdin().read_line(&mut goal)?;
-    let goal = goal.trim();
- 
- 
-    // Find shortest path
-    match fastest_route(&graph, start, goal) {
-        Some((cost, path)) => {
-            println!("Shortest path from {} to {} is:", start, goal);
-            println!("Travel Time: {:.2} hours", cost/60.0);
-            println!("Shortest path: {:?}", path);
+    // Get user input for start and destination airports
+    loop { 
+        println!("Write 'exit' if you want to quit.");
+
+
+        println!("Enter your starting airport code: ");
+        io::stdout().flush()?;
+        let mut start = String::new();
+        io::stdin().read_line(&mut start)?;
+        let start = start.trim();
+        if start.eq_ignore_ascii_case("exit") {
+            break;
         }
-        None => println!("No path found from {} to {}.", start, goal),
+
+        print !("Enter your destination airport code: ");
+        io::stdout().flush()?;
+        let mut dest = String::new();
+        io::stdin().read_line(&mut dest)?;
+        let dest = dest.trim();
+        if dest.eq_ignore_ascii_case("exit") {
+            break;
+        }
+
+        match fastest_route(&graph, start, dest) {
+            Some((cost, path)) => {
+                println!("Shortest path from {} to {} is:", start, dest);
+                println!("Travel Time: {:.2} hours", cost/60.0);
+                println!("Shortest path: {:?}", path);
+            }
+            None => println!("No path found from {} to {}.", start, dest),
+        }
     }
+
+    
+    
  
  
     Ok(())
  }
+
+ #[test]
+fn test_fastest_route_with_real_data() {
+    let types = vec![1, 1, 2];
+    let mut df = DataFrame::new();
+    df.read_csv("src/airport.csv", &types).expect("Failed to read CSV");
+
+    let graph = crate::graph::build_airport(&df);
+
+    let start = "JFK";
+    let dest = "LAX";
+    let result = crate::path::fastest_route(&graph, start, dest);
+
+    assert!(result.is_some(), "No route found from {} to {}", start, dest);
+}
+
  

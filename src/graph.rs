@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::{columnval, DataFrame};
 //stuct to represent the flight statistics 
-//stor the times, count, average and standard deviation
+//stores the times, count, average and standard deviation
 #[derive(Debug, Clone)]
 pub struct FlightStats {
    pub times: Vec<f64>,
@@ -62,3 +62,34 @@ pub fn build_airport(df: &DataFrame) -> Graph{
    map
 }
 
+
+// tests for the build_airport function
+// the test uses a mock dataframe to test the function
+// the test checks if the graph is built correctly
+mod tests {
+    use super::*;
+    use crate::columnval::{One, Two}; 
+    use crate::DataFrame;             
+
+    #[test]
+    fn test_build_airport_runs() {
+        let df = DataFrame {
+            label: vec!["origin".to_string(), "destination".to_string(), "time".to_string()],
+            columns: vec![
+                vec![One("BOS".to_string()), One("LAX".to_string()), Two(6.0)],
+            ],
+            types: vec![1, 1, 2],
+        };
+
+        let graph = build_airport(&df);
+        assert!(graph.contains_key("BOS")); 
+
+        let dests = graph.get("BOS").unwrap();
+        assert!(dests.contains_key("LAX")); 
+
+        let stats = dests.get("LAX").unwrap();
+        assert_eq!(stats.count, 1);         
+        assert_eq!(stats.average, 6.0);     
+        assert_eq!(stats.std_dev, 0.0);     
+    }
+}
