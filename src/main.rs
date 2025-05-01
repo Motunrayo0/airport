@@ -6,7 +6,7 @@ mod graph;
 use graph::{build_airport, Graph};
 use crate::graph::FlightStats;
 mod path;
-use path::shortest_path;
+use path::fastest_route;
 use std::io::{self, Write};
 
 
@@ -129,13 +129,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut df = DataFrame::new();
     let types = vec![1, 1, 2]; 
     df.read_csv("airport.csv", &types)?;
-   
- 
- 
+
     // Build the graph
     let graph = build_airport(&df);
- 
- 
     // Get user input
     print!("Enter your starting airport code: ");
     io::stdout().flush()?;
@@ -152,7 +148,7 @@ fn main() -> Result<(), Box<dyn Error>> {
  
  
     // Find shortest path
-    match shortest_path(&graph, start, goal) {
+    match fastest_route(&graph, start, goal) {
         Some((cost, path)) => {
             println!("Shortest path from {} to {} is:", start, goal);
             println!("Travel Time: {:.2} hours", cost/60.0);

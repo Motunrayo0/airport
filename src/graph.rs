@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 use crate::{columnval, DataFrame};
-
-
 //stuct to represent the flight statistics 
 //stor the times, count, average and standard deviation
 #[derive(Debug, Clone)]
@@ -30,14 +28,10 @@ fn calculate(times:&Vec<f64>) -> (f64, f64){
 
 
 }
-
-
 // the graph is hashmap of hashmap
 // the outer hashmap is the origin airport
 pub type Graph = HashMap<String, HashMap<String, FlightStats>>;
-
 // builds a graph of flight  from the dataframe
-
 // #Arguments 
 // a refrecne to the data fram contaoning the flight data (orgin, destination and flight time )
 // #returns 
@@ -67,19 +61,4 @@ pub fn build_airport(df: &DataFrame) -> Graph{
    }
    map
 }
-/* this is how the hash map looks like {
-   "JFK": {
-       "BOS": FlightStats {
-           times: vec![1.5, 2.0, 1.7],
-           count: 3,
-           average: 1.73, 
-           std_dev: 0.23, 
-       },
-       "LGR": FlightStats {
-           times: vec![3.0],
-           count: 1,
-           average: 3.0,  
-           std_dev: 0.0,  
-       }
-}
-       */
+
