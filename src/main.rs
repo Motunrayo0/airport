@@ -2,6 +2,9 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use csv::ReaderBuilder;
+mod graph;
+use graph::{build_airport, Graph};
+use crate::graph::FlightStats;
 
 
 // Enum to represent the column values that can be a string or f64 
@@ -119,14 +122,29 @@ impl DataFrame{
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut df = DataFrame::new();
 
-    // Column types: 1 = String (Name), 2 = f64 (Score)
+
     let types = vec![1, 1, 2];
 
-    // Read from CSV
+
     df.read_csv("airport.csv", &types)?;
 
-    // Print the dataframe
+    // Print the DataFrame
     df.print_dataframe();
+
+    // Build the airport graph from the DataFrame
+    let graph = graph::build_airport(&df);
+
+    println!("Airport Graph: {:?}", graph);
+
+
+    if let Some(destinations) = graph.get("JFK") {
+        for (destination, stats) in destinations {
+            println!(
+                "From JFK to {}: Times: {:?}, Count: {}, Average: {:.2}, Std Dev: {:.2}",
+                destination, stats.times, stats.count, stats.average, stats.std_dev
+            );
+        }
+    }
 
     Ok(())
 }
