@@ -4,13 +4,17 @@ use std::fmt;
 use csv::ReaderBuilder;
 
 
-
+// Enum to represent the column values that can be a string or f64 
 #[derive(Debug, Clone)]
 enum columnval {
    One(String),
    Two(f64),
 }
 #[derive(Debug)]
+// `DataFrame` struct to hold the data
+// `label` is a vector of strings representing the column names
+// `columns` is a vector of vectors of `columnval` representing the data
+// `types` is a vector of u32 representing the types of the columns
 struct DataFrame{
    label: Vec<String>,
    columns: Vec<Vec<columnval>>,
@@ -21,6 +25,7 @@ struct DataFrame{
 
 
 // copied from homework 8  starter code
+// Custom error type for handling errors
 #[derive(Debug)]
 struct MyError(String);
 
@@ -37,6 +42,8 @@ impl Error for MyError {}
 
 
 impl DataFrame{
+    // createing a new DataFrame
+    // `new` function initializes a new `DataFrame` with empty vectors for `label`, `columns`, and `types`
    fn new() -> Self {
        DataFrame{
            label: Vec::new(),
@@ -46,13 +53,22 @@ impl DataFrame{
 
        }
    }
+   /// read  data from a csv file and turn into a DataFrame
+   /// 
+   /// # Arguments
+   /// * path - file path to the csv file
+   /// types - A vector of type indentifier: 1 for string and 2 for f64
+   /// 
+   /// # returns
+   /// * Result<(),Box<dyn Error>> - Ok if successful, Err if there is an error
    fn read_csv(&mut self, path: &str, types: &Vec<u32>) -> Result<(),Box<dyn Error>>{
        self.types = types.clone();
+       // create a csv reader with headers enable and comma delimiter 
        let mut read = csv::ReaderBuilder::new().delimiter(b',').has_headers(true).from_path(path)?;
        let headers = read.headers()?;
        self.label = headers.iter().map(|s| s.to_string()).collect();
 
-
+        // process each row in the CSV file 
        for result in read.records(){
            let r = result?;
            let mut row: Vec<columnval> = vec![];
@@ -67,6 +83,12 @@ impl DataFrame{
        }
        Ok(())
    }
+
+   /// print the DataFrame
+   /// 
+   /// # Arguments
+   /// * &self - a reference to the DataFrame
+   /// # prints the DataFrame to the console
    fn print_dataframe(&self) {
 
 
@@ -92,4 +114,19 @@ impl DataFrame{
 
  
   
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut df = DataFrame::new();
+
+    // Column types: 1 = String (Name), 2 = f64 (Score)
+    let types = vec![1, 1, 2];
+
+    // Read from CSV
+    df.read_csv("airport.csv", &types)?;
+
+    // Print the dataframe
+    df.print_dataframe();
+
+    Ok(())
 }
