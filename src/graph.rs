@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::{columnval, DataFrame};
-//stuct to represent the flight statistics 
+// struct to represent the flight statistics
 //stores the times, count, average and standard deviation
 #[derive(Debug, Clone)]
 pub struct FlightStats {
@@ -9,7 +9,7 @@ pub struct FlightStats {
    pub average: f64,
    pub std_dev: f64,
 }
-// function to calculate the average and standard deviation
+// Function to calculate the average and standard deviation.
 // 
 // 3 Arguments 
 // 1. `times`: a vector of f64 representing the times
@@ -31,11 +31,12 @@ fn calculate(times:&Vec<f64>) -> (f64, f64){
 // the graph is hashmap of hashmap
 // the outer hashmap is the origin airport
 pub type Graph = HashMap<String, HashMap<String, FlightStats>>;
-// builds a graph of flight  from the dataframe
-// #Arguments 
-// a refrecne to the data fram contaoning the flight data (orgin, destination and flight time )
-// #returns 
+// Builds a graph of flights from the DataFrame
+// # Arguments 
+// A reference to the DataFrame containing the flight data (origin, destination, and flight time).
+// # Returns 
 // - A graph containing the calulated flight stats 
+// - graph is a hashmap of hashmap
 pub fn build_airport(df: &DataFrame) -> Graph{
    let mut map: Graph = HashMap::new(); 
    for row in &df.columns{
@@ -73,6 +74,7 @@ mod tests {
 
     #[test]
     fn test_build_airport_runs() {
+        // Tests that the build_airport function constructs the correct graph structure.
         let df = DataFrame {
             label: vec!["origin".to_string(), "destination".to_string(), "time".to_string()],
             columns: vec![
