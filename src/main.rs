@@ -173,7 +173,7 @@ fn main() -> Result<(), Box<dyn Error>> {
  }
 
  #[test]
-fn test_fastest_route_with_real_data() {
+fn test_fastest_route() {
     let types = vec![1, 1, 2];
     let mut df = DataFrame::new();
     df.read_csv("src/airport.csv", &types).expect("Failed to read CSV");
