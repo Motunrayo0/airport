@@ -180,6 +180,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
  #[test]
 fn test_fastest_route() {
+    // Test the fastest_route function`
     let types = vec![1, 1, 2];
     let mut df = DataFrame::new();
     df.read_csv("src/airport.csv", &types).expect("Failed to read CSV");

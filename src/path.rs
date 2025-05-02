@@ -3,6 +3,17 @@ use std::cmp::Reverse;
 use ordered_float::OrderedFloat;
 use crate::graph::{Graph, FlightStats};
 
+
+/// Finds the fastest route between two airports using Dijkstra's algorithm.
+/// 
+/// # Arguments
+/// - `graph`: A reference to a graph representing airport connections and flight statistics.
+/// - `start`: The starting airport code.
+/// - `goal`: The destination airport code.
+/// 
+/// # Returns
+/// - `Some((total_time, path))`: A tuple containing the total average flight time and a vector of airport codes representing the path, if a route is found.
+/// - `None`: If there is no valid route between the start and goal.
 pub fn fastest_route(graph: &Graph, start: &str, goal: &str) -> Option<(f64, Vec<String>)> {
     let mut heap = BinaryHeap::new();
     let mut distances: HashMap<String, f64> = HashMap::new();
@@ -38,7 +49,7 @@ pub fn fastest_route(graph: &Graph, start: &str, goal: &str) -> Option<(f64, Vec
         }
     }
 
-    // No path found
+    
     None
 }
 
